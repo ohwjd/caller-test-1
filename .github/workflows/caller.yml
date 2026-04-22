@@ -20,6 +20,9 @@ on:
         required: true
         type: string
 
+permissions: 
+    contents: write
+
 jobs:
   call-shared:
     uses: mei-friend/automation/.github/workflows/central.yml@main

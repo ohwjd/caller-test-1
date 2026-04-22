@@ -1,0 +1,31 @@
+name: Call automation workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      workpackage_id:
+        description: "The id of the work package you want to run."
+        required: true
+        type: string
+      filepath:
+        description: "MEI file you want to change."
+        required: true
+        type: string
+      addargs: 
+        description: "Additional arguments required by the work package"
+        required: false
+        type: string
+      commit_message:
+        description: "Commit message added by mei-friend or manually when dispatching"
+        required: true
+        type: string
+
+jobs:
+  call-shared:
+    uses: mei-friend/automation/.github/workflows/central.yml@main
+    with:
+      workpackage_id: ${{ github.event.inputs.workpackage_id }}
+      filepath: ${{ github.event.inputs.filepath }}
+      addargs: ${{ github.event.inputs.addargs }}
+      commit_message: ${{ github.event.inputs.commit_message }}
+      

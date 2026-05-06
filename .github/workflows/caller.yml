@@ -7,6 +7,14 @@ on:
         description: "The central repository (e.g., mei-friend/automation)"
         required: true
         type: string
+      branch:
+        description: "Branch of the central repository to use."
+        required: true
+        type: string
+      automation:
+        description: "Path to the automation script within the central repository (e.g., automation/run_automation.sh)"
+        required: true
+        type: string
       workpackage_id:
         description: "The id of the work package you want to run."
         required: true
@@ -44,6 +52,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: ${{ github.event.inputs.central_repository }}
+          ref: ${{ github.event.inputs.branch }}
           path: central-repo
 
       - name: Execute central logic
@@ -53,8 +62,8 @@ jobs:
           filepath: ${{ github.event.inputs.filepath }}
           parameters: ${{ github.event.inputs.parameters }}
         run: |
-          chmod +x ./central-repo/automation/run_automation.sh
-          ./central-repo/automation/run_automation.sh
+          chmod +x ./central-repo/${{ github.event.inputs.automation }}
+          ./central-repo/${{ github.event.inputs.automation }}
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v7

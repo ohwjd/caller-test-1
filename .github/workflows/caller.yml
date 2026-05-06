@@ -1,0 +1,63 @@
+name: Call automation workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      central_repository:
+        description: "The central repository (e.g., mei-friend/automation)"
+        required: true
+        type: string
+      workpackage_id:
+        description: "The id of the work package you want to run."
+        required: true
+        type: string
+      filepath:
+        description: "MEI file you want to change."
+        required: true
+        type: string
+      workpackage_json:
+        description: "The selected work package from the json as a string."
+        required: true
+        type: string
+      parameters:
+        description: "Additional parameters required by the work package."
+        required: false
+        type: string
+      commit_message:
+        description: "Commit message added by mei-friend or manually when dispatching"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  run-automation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout caller repository
+        uses: actions/checkout@v6
+        with:
+          path: caller-repo
+
+      - name: Checkout central repository
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.event.inputs.central_repository }}
+          path: central-repo
+
+      - name: Execute central logic
+        env:
+          workpackage_id: ${{ github.event.inputs.workpackage_id }}
+          workpackage_json: ${{ github.event.inputs.workpackage_json }}
+          filepath: ${{ github.event.inputs.filepath }}
+          parameters: ${{ github.event.inputs.parameters }}
+        run: |
+          chmod +x ./central-repo/automation/run_automation.sh
+          ./central-repo/automation/run_automation.sh
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: ${{ github.event.inputs.commit_message }}
+          repository: caller-repo

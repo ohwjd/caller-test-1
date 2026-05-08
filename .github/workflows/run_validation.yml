@@ -1,7 +1,7 @@
 name: Validate TEI and MEI encodings
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       repo-path:
         description: "Relative path to caller repo checkout"

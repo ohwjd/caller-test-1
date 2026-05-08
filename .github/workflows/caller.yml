@@ -1,4 +1,4 @@
-name: Call automation workflow
+name: Call work package workflow
 env:
   mei-friend: true
 
